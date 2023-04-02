@@ -33,8 +33,19 @@ async function getWeather() {
     
     // Log weather data to console
     console.log(weatherData);
-    document.getElementById('temp').textContent = weatherData.main.temp;
+    document.getElementById('city').textContent = weatherData.main.name;
+    $(document).ready(function() {
+      var currentDate = new Date();
+      var datetimeString = currentDate.toLocaleString();
+      $('#date').text(datetimeString);
+    });
+    const tempInKelvin = weatherData.main.temp;
+    const tempInFaren = (tempInKelvin - 273.15) * 1.8 + 32;
+    const tempConvert = tempInFaren.toFixed(0);
+    document.getElementById('icon').textContent = weatherData.weather[0].icon;
+    document.getElementById('temp').textContent = tempConvert;
     document.getElementById('weather').textContent = weatherData.weather[0].description;
+    document.getElementById('humidity').textContent = weatherData.main.humidity
     document.getElementById('wind').textContent = weatherData.wind.speed;
    
   } catch (error) {
