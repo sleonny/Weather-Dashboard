@@ -4,7 +4,7 @@ async function getWeather() {
   var countryCode = document.getElementById("country").value;
   apiKey = "3c648c734921941cb15d04ac851c1587"
   
-  var url = `http://api.openweathermap.org/geo/1.0/direct?q=${cityName},${stateCode},${countryCode}&limit=1&appid=${apiKey}`;
+  var url = `https://api.openweathermap.org/geo/1.0/direct?q=${cityName},${stateCode},${countryCode}&limit=1&appid=${apiKey}`;
                     
   try {
     // Send request to OpenWeatherMap API
@@ -62,7 +62,7 @@ async function getForecast() {
   var countryCode = document.getElementById("country").value;
   apiKey = "3c648c734921941cb15d04ac851c1587"
   
-  var urlF = `http://api.openweathermap.org/data/2.5/forecast?q=${cityName},${stateCode},${countryCode}&appid=${apiKey}`;
+  var urlF = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName},${stateCode},${countryCode}&appid=${apiKey}`;
                     
   try {
     // Send request to OpenWeatherMap API
@@ -70,12 +70,38 @@ async function getForecast() {
 
     // Convert response to JSON
     const dataF =  await responseF.json()
+    // Get time of data forecasted and format it
+    const timestamp = dataF.list[0].dt;
+    const formattedTimestamp = formatUnixTimestamp(timestamp);
+
+    // Display formatted timestamp on the DOM
+    const timeElement = document.getElementById("forecastTime");
+    timeElement.textContent = `Time of data forecasted (UTC): ${formattedTimestamp}`;
 
     // Log forecast data to console
     console.log(dataF);
   } catch (error) {
     console.log(error);
   }
+}
+
+function formatUnixTimestamp(timestamp) {
+  // Convert Unix timestamp to milliseconds
+  const date = new Date(timestamp * 1000);
+
+  // Format date and time string in UTC format
+  const options = {
+    timeZone: "UTC",
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric",
+  };
+
+  return date.toLocaleString("en-US", options);
 }
 
 var submitButton = document.getElementById("submitButton");
