@@ -1,27 +1,23 @@
-
-
-
-
 async function getWeather() {
   
-  const cityName = document.getElementById("city").value;
-  const stateCode = document.getElementById("state").value;
-  const countryCode = document.getElementById("country").value;
-  const apiKey = "3c648c734921941cb15d04ac851c1587"
+  var cityName = document.getElementById("city").value;
+  var stateCode = document.getElementById("state").value;
+  var countryCode = document.getElementById("country").value;
+  var apiKey = "3c648c734921941cb15d04ac851c1587"
   
   var url = `https://api.openweathermap.org/geo/1.0/direct?q=${cityName},${stateCode},${countryCode}&limit=1&appid=${apiKey}`;
                     
   try {
     // Send request to OpenWeatherMap API
-    const response = await fetch(url);
+    var response = await fetch(url);
     console.log(response);
 
     // Convert response to JSON
-    const data = await response.json();
+    var data = await response.json();
 
     // Get latitude and longitude from response
-    const latitude = data[0].lat;
-    const longitude = data[0].lon;
+    var latitude = data[0].lat;
+    var longitude = data[0].lon;
 
     // Build URL for weather API with latitude, longitude, and API key
     const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}`;
@@ -55,25 +51,33 @@ async function getWeather() {
     console.log(error);
   }
 }
-const cityName = document.getElementById("city").value;
-  const stateCode = document.getElementById("state").value;
-  const countryCode = document.getElementById("country").value;
-  const apiKey = "3c648c734921941cb15d04ac851c1587"
-const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${apiKey}`;
 
-fetch(apiUrl)
-  .then((response) => {
-    if (response.ok) {
-      return response.json();
-    } else {
-      throw new Error("Network response was not ok.");
-    }
-  })
-  .then((data) => {
-    const forecastData = data.list;
-    const forecastContainer = document.getElementById("forecast");
+async function getForecast() {
 
-    for (let i = 0; i < forecastData.length; i += 8) {
+  var cityName = document.getElementById("city").value;
+  var stateCode = document.getElementById("state").value;
+  var countryCode = document.getElementById("country").value;
+  var apiKey = "3c648c734921941cb15d04ac851c1587";
+
+  var apiUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${cityName},${stateCode},${countryCode}&limit=1&appid=${apiKey}`;
+
+  try {
+    var response = await fetch(apiUrl);
+    console.log(response);
+
+    var data = await response.json();
+
+    var latitude = data[0].lat;
+    var longitude = data[0].lon;
+
+    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${latitude}&lon=${longitude}&appid=${apiKey}`;
+
+    const forecastResponse = await fetch(forecastUrl);
+
+    const forecastData = await forecastResponse.json();
+    console.log(forecastData);
+
+    for (let i = 0; i < forecastData.length; i += 5) {
       const forecastItem = forecastData[i];
       const forecastDate = new Date(forecastItem.dt_txt);
       const forecastIcon = forecastItem.weather[0].icon;
@@ -85,13 +89,11 @@ fetch(apiUrl)
       document.getElementById('forecast-temperature').textContent = forecastItem.main.temp;
       document.getElementById('forecast-humidity').textContent = forecastItem.main.humidity;
       document.getElementById('forecast-wind').textContent = forecastItem.wind.speed;
-     ;
-      
     }
-  })
-  .catch((error) => {
+  } catch (error) {
     console.error("There was a problem fetching the forecast data:", error);
-  });
+  }
+}
 
 
 function formatUnixTimestamp(timestamp) {
@@ -116,5 +118,5 @@ function formatUnixTimestamp(timestamp) {
 var submitButton = document.getElementById("submitButton");
 submitButton.addEventListener("click", function() {
   getWeather();
- 
+ getForecast();
 });
