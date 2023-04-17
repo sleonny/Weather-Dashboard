@@ -77,19 +77,52 @@ async function getForecast() {
     const forecastData = await forecastResponse.json();
     console.log(forecastData);
 
-    for (let i = 0; i < forecastData.length; i += 5) {
-      const forecastItem = forecastData[i];
-      const forecastDate = new Date(forecastItem.dt_txt);
-      const forecastIcon = forecastItem.weather[0].icon;
-      const forecastTemp = forecastItem.main.temp;
-      const forecastHumidity = forecastItem.main.humidity;
-      const forecastWind = forecastItem.wind.speed;
-      document.getElementById('forecast-date').textContent = new Date(forecastItem.dt_txt);
-      document.getElementById('forecast-icon').textContent = forecastItem.weather[0].icon;
-      document.getElementById('forecast-temperature').textContent = forecastItem.main.temp;
-      document.getElementById('forecast-humidity').textContent = forecastItem.main.humidity;
-      document.getElementById('forecast-wind').textContent = forecastItem.wind.speed;
+    var forecastContainer = document.getElementById('forecast-container');
+    forecastContainer.innerHTML = ''; // Clear previous content
+    var currentDate = new Date(); // Get current date
+    var dayCount = 0; // Counter for number of forecast days displayed
+    
+    for (var i = 0; i < forecastData.list.length; i++) {
+      var forecastItem = forecastData.list[i];
+      var forecastDate = new Date(forecastItem.dt_txt);
+    
+      // Check if the forecast item is for a new day
+      if (forecastDate.getDate() !== currentDate.getDate()) {
+        dayCount++; // Increment day count
+        currentDate = forecastDate; // Update current date
+    
+        // Display forecast item if it's a new day and we haven't displayed 5 days yet
+        if (dayCount <= 5) {
+          var forecastItemDiv = document.createElement('div');
+          var forecastDateElem = document.createElement('p');
+          var forecastIconElem = document.createElement('p');
+          var forecastTempElem = document.createElement('p');
+          var forecastHumidityElem = document.createElement('p');
+          var forecastWindElem = document.createElement('p');
+    
+          // Set content for new elements
+          forecastDateElem.textContent = forecastDate.toLocaleDateString();
+          forecastIconElem.textContent = forecastItem.weather[0].icon;
+          forecastTempElem.textContent = forecastItem.main.temp;
+          forecastHumidityElem.textContent = forecastItem.main.humidity;
+          forecastWindElem.textContent = forecastItem.wind.speed;
+    
+          // Append new elements to forecast container
+          forecastItemDiv.appendChild(forecastDateElem);
+          forecastItemDiv.appendChild(forecastIconElem);
+          forecastItemDiv.appendChild(forecastTempElem);
+          forecastItemDiv.appendChild(forecastHumidityElem);
+          forecastItemDiv.appendChild(forecastWindElem);
+          forecastContainer.appendChild(forecastItemDiv);
+        }
+      }
+    
+      // Exit the loop after displaying 5 days of forecast
+      if (dayCount === 5) {
+        break;
+      }
     }
+  
   } catch (error) {
     console.error("There was a problem fetching the forecast data:", error);
   }
