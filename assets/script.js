@@ -1,14 +1,20 @@
+
+
+
+
 async function getWeather() {
-  var cityName = document.getElementById("city").value;
-  var stateCode = document.getElementById("state").value;
-  var countryCode = document.getElementById("country").value;
-  apiKey = "3c648c734921941cb15d04ac851c1587"
+  
+  const cityName = document.getElementById("city").value;
+  const stateCode = document.getElementById("state").value;
+  const countryCode = document.getElementById("country").value;
+  const apiKey = "3c648c734921941cb15d04ac851c1587"
   
   var url = `https://api.openweathermap.org/geo/1.0/direct?q=${cityName},${stateCode},${countryCode}&limit=1&appid=${apiKey}`;
                     
   try {
     // Send request to OpenWeatherMap API
     const response = await fetch(url);
+    console.log(response);
 
     // Convert response to JSON
     const data = await response.json();
@@ -49,41 +55,44 @@ async function getWeather() {
     console.log(error);
   }
 }
+const cityName = document.getElementById("city").value;
+  const stateCode = document.getElementById("state").value;
+  const countryCode = document.getElementById("country").value;
+  const apiKey = "3c648c734921941cb15d04ac851c1587"
+const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${apiKey}`;
 
+fetch(apiUrl)
+  .then((response) => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      throw new Error("Network response was not ok.");
+    }
+  })
+  .then((data) => {
+    const forecastData = data.list;
+    const forecastContainer = document.getElementById("forecast");
 
+    for (let i = 0; i < forecastData.length; i += 8) {
+      const forecastItem = forecastData[i];
+      const forecastDate = new Date(forecastItem.dt_txt);
+      const forecastIcon = forecastItem.weather[0].icon;
+      const forecastTemp = forecastItem.main.temp;
+      const forecastHumidity = forecastItem.main.humidity;
+      const forecastWind = forecastItem.wind.speed;
+      document.getElementById('forecast-date').textContent = new Date(forecastItem.dt_txt);
+      document.getElementById('forecast-icon').textContent = forecastItem.weather[0].icon;
+      document.getElementById('forecast-temperature').textContent = forecastItem.main.temp;
+      document.getElementById('forecast-humidity').textContent = forecastItem.main.humidity;
+      document.getElementById('forecast-wind').textContent = forecastItem.wind.speed;
+     ;
+      
+    }
+  })
+  .catch((error) => {
+    console.error("There was a problem fetching the forecast data:", error);
+  });
 
-
-
-
-
-async function getForecast() {
-  var cityName = document.getElementById("city").value;
-  var stateCode = document.getElementById("state").value;
-  var countryCode = document.getElementById("country").value;
-  apiKey = "3c648c734921941cb15d04ac851c1587"
-  
-  var urlF = `https://api.openweathermap.org/data/2.5/forecast?q=${cityName},${stateCode},${countryCode}&appid=${apiKey}`;
-                    
-  try {
-    // Send request to OpenWeatherMap API
-    const responseF = await fetch(urlF);
-
-    // Convert response to JSON
-    const dataF =  await responseF.json()
-    // Get time of data forecasted and format it
-    const timestamp = dataF.list[0].dt;
-    const formattedTimestamp = formatUnixTimestamp(timestamp);
-
-    // Display formatted timestamp on the DOM
-    const timeElement = document.getElementById("forecastTime");
-    timeElement.textContent = `Time of data forecasted (UTC): ${formattedTimestamp}`;
-
-    // Log forecast data to console
-    console.log(dataF);
-  } catch (error) {
-    console.log(error);
-  }
-}
 
 function formatUnixTimestamp(timestamp) {
   // Convert Unix timestamp to milliseconds
@@ -107,5 +116,5 @@ function formatUnixTimestamp(timestamp) {
 var submitButton = document.getElementById("submitButton");
 submitButton.addEventListener("click", function() {
   getWeather();
-  getForecast();
+ 
 });
