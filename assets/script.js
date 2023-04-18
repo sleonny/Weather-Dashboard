@@ -7,30 +7,25 @@ async function getWeather() {
   
   var url = `https://api.openweathermap.org/geo/1.0/direct?q=${cityName},${stateCode},${countryCode}&limit=1&appid=${apiKey}`;
                     
+  
   try {
-    // Send request to OpenWeatherMap API
-    var response = await fetch(url);
+   var response = await fetch(url);
     console.log(response);
 
-    // Convert response to JSON
     var data = await response.json();
 
-    // Get latitude and longitude from response
-    var latitude = data[0].lat;
+   var latitude = data[0].lat;
     var longitude = data[0].lon;
 
-    // Build URL for weather API with latitude, longitude, and API key
+    
     const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}`;
 
-    // Send request to weather API
+   
     const weatherResponse = await fetch(weatherUrl);
 
-    // Convert response to JSON
-    const weatherData = await weatherResponse.json();
-
     
-    // Log weather data to console
-    console.log(weatherData);
+    const weatherData = await weatherResponse.json();
+   console.log(weatherData);
   
     document.getElementById('city').textContent = weatherData.main.name;
     $(document).ready(function() {
@@ -38,14 +33,14 @@ async function getWeather() {
       var datetimeString = currentDate.toLocaleString();
       $('#date').text(datetimeString);
     });
-    const tempInKelvin = weatherData.main.temp;
-    const tempInFaren = (tempInKelvin - 273.15) * 1.8 + 32;
-    const tempConvert = tempInFaren.toFixed(0);
+    var tempInKelvin = weatherData.main.temp;
+    var tempInFaren = (tempInKelvin - 273.15) * 1.8 + 32;
+    var tempConvert = tempInFaren.toFixed(0);
     document.getElementById('icon').textContent = weatherData.weather[0].icon;
-    document.getElementById('temp').textContent = tempConvert;
+    document.getElementById('temp').textContent = tempConvert + "F";
     document.getElementById('weather').textContent = weatherData.weather[0].description;
-    document.getElementById('humidity').textContent = weatherData.main.humidity
-    document.getElementById('wind').textContent = weatherData.wind.speed;
+    document.getElementById('humidity').textContent = weatherData.main.humidity + "%";
+    document.getElementById('wind').textContent = weatherData.wind.speed + "mph";
   } 
   catch (error) {
     console.log(error);
@@ -99,11 +94,15 @@ async function getForecast() {
           var forecastTempElem = document.createElement('p');
           var forecastHumidityElem = document.createElement('p');
           var forecastWindElem = document.createElement('p');
+
+          var tempInKelvin = forecastItem.main.temp;
+          var tempInFaren = (tempInKelvin * 1.8) - 459.67;
+          var tempConvert = tempInFaren.toFixed(0);
     
           // Set content for new elements
           forecastDateElem.textContent = forecastDate.toLocaleDateString();
           forecastIconElem.textContent = forecastItem.weather[0].icon;
-          forecastTempElem.textContent = forecastItem.main.temp;
+          forecastTempElem.textContent = tempConvert + 'F';
           forecastHumidityElem.textContent = forecastItem.main.humidity;
           forecastWindElem.textContent = forecastItem.wind.speed;
     
