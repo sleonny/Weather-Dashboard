@@ -1,50 +1,46 @@
-async function getWeather() {
-  
+function getWeather() {
   var cityName = document.getElementById("city").value;
   var stateCode = document.getElementById("state").value;
   var countryCode = document.getElementById("country").value;
-  var apiKey = "3c648c734921941cb15d04ac851c1587"
+  var apiKey = "3c648c734921941cb15d04ac851c1587";
   
   var url = `https://api.openweathermap.org/geo/1.0/direct?q=${cityName},${stateCode},${countryCode}&limit=1&appid=${apiKey}`;
-                    
-  
-  try {
-   var response = await fetch(url);
-    console.log(response);
 
-    var data = await response.json();
+  fetch(url)
+    .then(response => {
+      console.log(response);
+      return response.json();
+    })
+    .then(data => {
+      var latitude = data[0].lat;
+      var longitude = data[0].lon;
 
-   var latitude = data[0].lat;
-    var longitude = data[0].lon;
+      const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}`;
 
-    
-    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}`;
+      return fetch(weatherUrl);
+    })
+    .then(weatherResponse => weatherResponse.json())
+    .then(weatherData => {
+      console.log(weatherData);
 
-   
-    const weatherResponse = await fetch(weatherUrl);
-
-    
-    const weatherData = await weatherResponse.json();
-   console.log(weatherData);
-  
-    document.getElementById('city').textContent = weatherData.main.name;
-    $(document).ready(function() {
-      var currentDate = new Date();
-      var datetimeString = currentDate.toLocaleString();
-      $('#date').text(datetimeString);
+      document.getElementById('city').textContent = weatherData.name;
+      $(document).ready(function() {
+        var currentDate = new Date();
+        var datetimeString = currentDate.toLocaleString();
+        $('#date').text(datetimeString);
+      });
+      var tempInKelvin = weatherData.main.temp;
+      var tempInFaren = (tempInKelvin - 273.15) * 1.8 + 32;
+      var tempConvert = tempInFaren.toFixed(0);
+      document.getElementById('icon').textContent = weatherData.weather[0].icon;
+      document.getElementById('temp').textContent = tempConvert + "F";
+      document.getElementById('weather').textContent = weatherData.weather[0].description;
+      document.getElementById('humidity').textContent = weatherData.main.humidity + "%";
+      document.getElementById('wind').textContent = weatherData.wind.speed + "mph";
+    })
+    .catch(error => {
+      console.log(error);
     });
-    var tempInKelvin = weatherData.main.temp;
-    var tempInFaren = (tempInKelvin - 273.15) * 1.8 + 32;
-    var tempConvert = tempInFaren.toFixed(0);
-    document.getElementById('icon').textContent = weatherData.weather[0].icon;
-    document.getElementById('temp').textContent = tempConvert + "F";
-    document.getElementById('weather').textContent = weatherData.weather[0].description;
-    document.getElementById('humidity').textContent = weatherData.main.humidity + "%";
-    document.getElementById('wind').textContent = weatherData.wind.speed + "mph";
-  } 
-  catch (error) {
-    console.log(error);
-  }
 }
 
 async function getForecast() {
@@ -80,6 +76,7 @@ async function getForecast() {
     for (var i = 0; i < forecastData.list.length; i++) {
       var forecastItem = forecastData.list[i];
       var forecastDate = new Date(forecastItem.dt_txt);
+     
     
       // Check if the forecast item is for a new day
       if (forecastDate.getDate() !== currentDate.getDate()) {
@@ -89,22 +86,36 @@ async function getForecast() {
         // Display forecast item if it's a new day and we haven't displayed 5 days yet
         if (dayCount <= 5) {
           var forecastItemDiv = document.createElement('div');
+          forecastItemDiv.className = 'forecast-item';
           var forecastDateElem = document.createElement('p');
           var forecastIconElem = document.createElement('p');
+          forecastIconElem.className = 'forecast-icon';
           var forecastTempElem = document.createElement('p');
+          forecastTempElem.className = 'forecast-temp';
           var forecastHumidityElem = document.createElement('p');
+          forecastHumidityElem.className = 'forecast-humidity';
           var forecastWindElem = document.createElement('p');
+          forecastWindElem.className = 'forecast-wind';
+          var forecastDescriptionElem = document.createElement('p');
+          forecastDescriptionElem.className = 'forecast-description';
+         
 
           var tempInKelvin = forecastItem.main.temp;
           var tempInFaren = (tempInKelvin * 1.8) - 459.67;
           var tempConvert = tempInFaren.toFixed(0);
     
           // Set content for new elements
-          forecastDateElem.textContent = forecastDate.toLocaleDateString();
-          forecastIconElem.textContent = forecastItem.weather[0].icon;
+          var formattedDate = (forecastDate.getMonth() + 1) + '/' + forecastDate.getDate() + '/' + forecastDate.getFullYear();
+          forecastDateElem.textContent = formattedDate;
+          var iconCode = forecastItem.weather[0].icon;
+var iconUrl = `https://openweathermap.org/img/w/${iconCode}.png`;
+var iconImg = document.createElement('img');
+iconImg.src = iconUrl;
+forecastIconElem.appendChild(iconImg);
           forecastTempElem.textContent = tempConvert + 'F';
           forecastHumidityElem.textContent = forecastItem.main.humidity;
           forecastWindElem.textContent = forecastItem.wind.speed;
+          forecastDescriptionElem.textContent = forecastItem.weather[0].description;
     
           // Append new elements to forecast container
           forecastItemDiv.appendChild(forecastDateElem);
@@ -112,6 +123,7 @@ async function getForecast() {
           forecastItemDiv.appendChild(forecastTempElem);
           forecastItemDiv.appendChild(forecastHumidityElem);
           forecastItemDiv.appendChild(forecastWindElem);
+          forecastItemDiv.appendChild(forecastDescriptionElem);
           forecastContainer.appendChild(forecastItemDiv);
         }
       }

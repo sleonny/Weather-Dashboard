@@ -1,9 +1,53 @@
 * body {
+    background-color: rgb(168, 168, 163);
     
 }
+
+
 
 #search {
 width: 33.33%;
 float: left;
 }
 
+
+#forecast-container {
+    display: flex;
+    overflow-x: auto; /* Enable horizontal scrolling if forecast items exceed container width */
+    gap: 10px; /* Add spacing between forecast items */
+  }
+
+
+  
+  .forecast-item {
+    display: inline-block;
+    width: 20%;
+    margin: 10px;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 5px solid #101010;
+    text-align: center;
+   
+  }
+
+
+  
+  .forecast-item p {
+    margin: 0;
+  }
+  
+  .forecast-icon {
+    font-size: 24px; /* Set appropriate size for the icon */
+  }
+  
+  .forecast-temp {
+    font-weight: bold; /* Set bold font for temperature */
+  }
+  
+  .forecast-humidity,
+  .forecast-wind,
+  .forecast-description {
+    font-size: 14px; /* Set smaller font for humidity and wind */
+  }
+
+  
