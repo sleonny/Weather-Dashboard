@@ -1,46 +1,58 @@
-function getWeather() {
+async function getWeather() {
+  
   var cityName = document.getElementById("city").value;
   var stateCode = document.getElementById("state").value;
   var countryCode = document.getElementById("country").value;
-  var apiKey = "3c648c734921941cb15d04ac851c1587";
+  var apiKey = "3c648c734921941cb15d04ac851c1587"
   
   var url = `https://api.openweathermap.org/geo/1.0/direct?q=${cityName},${stateCode},${countryCode}&limit=1&appid=${apiKey}`;
+                    
+  
+  try {
+   var response = await fetch(url);
+    console.log(response);
 
-  fetch(url)
-    .then(response => {
-      console.log(response);
-      return response.json();
-    })
-    .then(data => {
-      var latitude = data[0].lat;
-      var longitude = data[0].lon;
+    var data = await response.json();
 
-      const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}`;
+   var latitude = data[0].lat;
+    var longitude = data[0].lon;
 
-      return fetch(weatherUrl);
-    })
-    .then(weatherResponse => weatherResponse.json())
-    .then(weatherData => {
-      console.log(weatherData);
+    
+    const weatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}`;
 
-      document.getElementById('city').textContent = weatherData.name;
-      $(document).ready(function() {
-        var currentDate = new Date();
-        var datetimeString = currentDate.toLocaleString();
-        $('#date').text(datetimeString);
-      });
-      var tempInKelvin = weatherData.main.temp;
-      var tempInFaren = (tempInKelvin - 273.15) * 1.8 + 32;
-      var tempConvert = tempInFaren.toFixed(0);
-      document.getElementById('icon').textContent = weatherData.weather[0].icon;
-      document.getElementById('temp').textContent = tempConvert + "F";
-      document.getElementById('weather').textContent = weatherData.weather[0].description;
-      document.getElementById('humidity').textContent = weatherData.main.humidity + "%";
-      document.getElementById('wind').textContent = weatherData.wind.speed + "mph";
-    })
-    .catch(error => {
-      console.log(error);
+   
+    const weatherResponse = await fetch(weatherUrl);
+
+    
+    const weatherData = await weatherResponse.json();
+   console.log(weatherData);
+  
+    document.getElementById('city').textContent = weatherData.main.name;
+    $(document).ready(function() {
+      var currentDate = new Date();
+      var datetimeString = currentDate.toLocaleString();
+      $('#date').text(datetimeString);
     });
+    var tempInKelvin = weatherData.main.temp;
+    var tempInFaren = (tempInKelvin - 273.15) * 1.8 + 32;
+    var tempConvert = tempInFaren.toFixed(0);
+    var iconCode = weatherData.weather[0].icon;
+var iconUrl = `https://openweathermap.org/img/w/${iconCode}.png`;
+
+// Create an img element
+var iconImg = document.createElement('img');
+
+// Set the src attribute of the img element to the URL of the icon image
+iconImg.src = iconUrl;
+    document.getElementById('icon').appendChild(iconImg);
+    document.getElementById('temp').textContent = tempConvert + "F";
+    document.getElementById('weather').textContent = weatherData.weather[0].description;
+    document.getElementById('humidity').textContent = weatherData.main.humidity + "%";
+    document.getElementById('wind').textContent = weatherData.wind.speed + "mph";
+  } 
+  catch (error) {
+    console.log(error);
+  }
 }
 
 async function getForecast() {
