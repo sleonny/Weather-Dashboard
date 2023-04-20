@@ -3,7 +3,30 @@
     
 }
 
+#savedCitiesContainer {
 
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background-color: #f8f8f8;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  #savedCitiesOutput h3 {
+    margin-top: 0;
+  }
+  
+  #savedCitiesOutput ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  #savedCitiesOutput li {
+    margin-bottom: 5px;
+  }
 
 #search {
 width: 33.33%;

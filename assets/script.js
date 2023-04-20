@@ -176,52 +176,54 @@ submitButton.addEventListener("click", function () {
   getForecast();
 });
 
-var savedCities = document.querySelector("#savedCities");
-var saveButton = document.querySelector("#save");
-var deleteButton = document.querySelector("#delete");
+document.addEventListener("DOMContentLoaded", function () {
+  var savedCities = document.querySelector("#savedCities");
+  var saveButton = document.querySelector("#save");
+  var deleteButton = document.querySelector("#delete");
 
-var cityList = localStorage.getItem("cityList");
-
-savedCities.textContent = cityList;
-
-saveButton.addEventListener("click", function () {
-  // Code to save city to local storage and add it to the list
-  var cityName = document.getElementById("cityInput").value;
-
-  // Save the city name to local storage
+  // Load cityList from localStorage and update savedCities element
   var cityList = localStorage.getItem("cityList");
   if (!cityList) {
     cityList = [];
   } else {
     cityList = JSON.parse(cityList);
+    // Update savedCities element with cityList data
+    for (var i = 0; i < cityList.length; i++) {
+      var savedCityItem = document.createElement("li");
+      savedCityItem.textContent = cityList[i];
+      savedCities.appendChild(savedCityItem);
+    }
   }
-  cityList.push(cityName);
-  localStorage.setItem("cityList", JSON.stringify(cityList));
 
-  // Add the city name to the saved cities list
-  var savedCityItem = document.createElement("li");
-  savedCityItem.textContent = cityName;
-  savedCities.appendChild(savedCityItem);
-});
+  saveButton.addEventListener("click", function () {
+    // Code to save city to local storage and add it to the list
+    var cityName = document.getElementById("cityInput").value;
 
-deleteButton.addEventListener("click", function () {
-  // Code to delete city from local storage and remove it from the list
-  var selectedCity = savedCities.querySelector("li.selected");
-  if (selectedCity) {
-    var cityName = selectedCity.textContent;
+    // Save the city name to local storage
+    cityList.push(cityName);
+    localStorage.setItem("cityList", JSON.stringify(cityList));
 
-    // Delete the city name from local storage
-    var cityList = localStorage.getItem("cityList");
-    if (cityList) {
-      cityList = JSON.parse(cityList);
+    // Add the city name to the saved cities list
+    var savedCityItem = document.createElement("li");
+    savedCityItem.textContent = cityName;
+    savedCities.appendChild(savedCityItem);
+  });
+
+  deleteButton.addEventListener("click", function () {
+    // Code to delete city from local storage and remove it from the list
+    var selectedCity = savedCities.querySelector("li.selected");
+    if (selectedCity) {
+      var cityName = selectedCity.textContent;
+
+      // Delete the city name from local storage
       var cityIndex = cityList.indexOf(cityName);
       if (cityIndex > -1) {
         cityList.splice(cityIndex, 1);
         localStorage.setItem("cityList", JSON.stringify(cityList));
       }
-    }
 
-    // Remove the city name from the saved cities list
-    selectedCity.remove();
-  }
+      // Remove the city name from the saved cities list
+      selectedCity.remove();
+    }
+  });
 });
