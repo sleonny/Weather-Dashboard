@@ -1,17 +1,38 @@
-# Weather-Dashboard
-A web application to view and store weather information from multiple cities
+# Weather Dashboard
+    
+    
+    
+    ## Description
+    
+    This app was built to easily access current weather as well as a five day forecast.  Then cities can be stored for quick access in the future using local storage.
 
+       
+    ## Installation
 
-AS A traveler
-I WANT to see the weather outlook for multiple cities
-SO THAT I can plan a trip accordingly
+    Clone the repository @ https://github.com/sleonny/Weather-Dashboard and open the index.html file in a live server
 
-GIVEN a weather dashboard with form inputs
-WHEN I search for a city
-THEN I am presented with current and future conditions for that city and that city is added to the search history
-WHEN I view current weather conditions for that city
-THEN I am presented with the city name, the date, an icon representation of weather conditions, the temperature, the humidity, and the the wind speed
-WHEN I view future weather conditions for that city
-THEN I am presented with a 5-day forecast that displays the date, an icon representation of weather conditions, the temperature, the wind speed, and the humidity
-WHEN I click on a city in the search history
-THEN I am again presented with current and future conditions for that city
+    ## Usage
+    
+    To quickly view current weather and a five day forecast for stored cities
+    
+    ## Credits
+    
+    The current and 5 day forecast API's @https://openweathermap.org/api, VS Code Editor, ChatGPT, w3 Schools
+    
+    ## License
+    
+    [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](https://sleonny.github.io/Weather-Dashboard/)
+
+This project is licensed under the MIT License.
+    
+    ## Addtional Features
+    
+    The feature to delete cities from local storage if you are no longer interested in them.
+    
+    ## How to Contribute
+    
+    Clone the repository @ https://github.com/sleonny/Weather-Dashboard and submit a pull request.  THANK YOU!
+    
+    ## App url
+    
+    https://sleonny.github.io/Weather-Dashboard/
